@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerCamController : MonoBehaviour
 {
     #region PUBLIC FEILDS
 
+    public bool oldInp = false;
     [Header("Mouse Lock")] public bool isMouseLocked;
     /*[Header("Camera Feild of Veiw")] public bool isFeildOfViewEnambled;
     public float cameraFeildOfViewMin;
@@ -29,6 +31,9 @@ public class PlayerCamController : MonoBehaviour
     private Camera m_camera;
     private GameManager gM;
 
+    private GetInp inp;
+    private InputAction look;
+
     #endregion
 
     #region UNITY ROUTINES
@@ -48,6 +53,15 @@ public class PlayerCamController : MonoBehaviour
         }*/
 
         #endregion
+
+        inp = new GetInp();
+    }
+
+    private void OnEnable()
+    {
+        look = inp.Player.Look;
+
+        look.Enable();
     }
 
     private void Update()
@@ -62,13 +76,13 @@ public class PlayerCamController : MonoBehaviour
             RotateCameraX();
             //CameraZoom();
 
-            isMouseLocked = true;
+            //isMouseLocked = true;
         }else
         {
-            isMouseLocked = false;
+            //isMouseLocked = false;
         }
 
-        MouseLock();
+        //MouseLock();
     }
 
     #endregion
@@ -79,9 +93,16 @@ public class PlayerCamController : MonoBehaviour
     {
         #region  COLLECT MOUSE INPUTS
 
-        m_mouseX = Input.GetAxis("Mouse X") * mouseSmooth;
-        m_mouseY = Input.GetAxis("Mouse Y") * mouseSmooth;
-        //m_mouseScroll = Input.GetAxis("Mouse ScrollWheel");
+        if (!oldInp)
+        {
+            m_mouseX = look.ReadValue<Vector2>().x;
+            m_mouseY = look.ReadValue<Vector2>().y;
+        }else
+        {
+            m_mouseX = Input.GetAxis("Mouse X") * mouseSmooth;
+            m_mouseY = Input.GetAxis("Mouse Y") * mouseSmooth;
+            //m_mouseScroll = Input.GetAxis("Mouse ScrollWheel");
+        }
 
         #endregion
     }
@@ -106,7 +127,7 @@ public class PlayerCamController : MonoBehaviour
         #endregion
     }
 
-    private void MouseLock()
+    /*private void MouseLock()
     {
         #region  LOCK MOUSE COURSER
 
@@ -118,7 +139,7 @@ public class PlayerCamController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         #endregion
-    }
+    }*/
 
     /*private void CameraZoom()
     {
@@ -143,6 +164,11 @@ public class PlayerCamController : MonoBehaviour
             }
         }
     }*/
+
+    private void OnDisable()
+    {
+        look.Disable();
+    }
 
     #endregion
 }

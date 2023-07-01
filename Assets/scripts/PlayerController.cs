@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
@@ -27,6 +28,14 @@ public class PlayerController : MonoBehaviour
     private Animator animP3;
     private Animator animP4;
 
+    private Vector2 movDir = Vector2.zero;
+    private GetInp inp;
+    private InputAction move;
+    private InputAction jump;
+    private InputAction pause;
+    private InputAction pov;
+    private int sel = 1;
+
     #endregion
 
     #region  PUBLIC
@@ -51,8 +60,28 @@ public class PlayerController : MonoBehaviour
     public GameObject crosshairs;
     public int difficulty = 5;
     public bool isGamePaused;
+    public bool oldInp = false;
 
     #endregion
+
+    private void Awake()
+    {
+        inp = new GetInp();
+    }
+
+    private void OnEnable()
+    {
+        // Really all this is needed for is so the Input system doesent yell at me
+        move = inp.Player.Move;
+        jump = inp.Player.Jump;
+        pause = inp.Player.Pause;
+        pov = inp.Player.Pov;
+
+        move.Enable();
+        jump.Enable();
+        pause.Enable();
+        pov.Enable();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -117,6 +146,151 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!oldInp)
+        {
+            movDir = move.ReadValue<Vector2>();
+            Bounds();
+
+            #region  CAM CHANGE
+
+            if (gM.isGameActive == true)
+            {
+                // changes the cam to the 1st person cam
+                if (sel == 1)
+                {
+                    firstPersonCam.SetActive(true);
+                    secondPersonCam.SetActive(false);
+                    thirdPersonCam.SetActive(false);
+                }
+
+                // changes the cam to the 2nd person cam
+                if (sel == 2)
+                {
+                    firstPersonCam.SetActive(false);
+                    secondPersonCam.SetActive(true);
+                    thirdPersonCam.SetActive(false);
+                }
+
+                // changes the cam to the 3rd person cam
+                if (sel == 3)
+                {
+                    firstPersonCam.SetActive(false);
+                    secondPersonCam.SetActive(false);
+                    thirdPersonCam.SetActive(true);
+                }
+
+                if (pov.WasPressedThisFrame())
+                {
+                    if (sel < 3)
+                    {
+                        sel ++;
+                    }else if (sel == 3)
+                    {
+                        sel = 1;
+                    }else
+                    {
+                        Debug.LogWarning("The selected pov is either above 3 or below 1. sel: " + sel + " sel will now be set to 1");
+                        sel = 1;
+                    }
+                }
+            }
+
+            #endregion
+
+            if (pause.WasPressedThisFrame())
+            {
+                if (gM.isGameOver == false)
+                {
+                    isGamePaused = !isGamePaused;
+                    Pause();
+                }
+            }
+
+            if(transform.position.y < -20)
+            {
+                transform.position = new Vector3(0, 2.2f, 0);
+            }
+
+            #region ANIMATION TRIGGERS
+
+            if(movDir.x != 0 || movDir.y != 0)
+            {
+                if(skin1.activeInHierarchy == true)
+                {
+                    animP1.SetTrigger("running");
+                }
+                if(skin2.activeInHierarchy == true)
+                {
+                    animP2.SetTrigger("running");
+                }
+                if(skin3.activeInHierarchy == true)
+                {
+                    animP3.SetTrigger("running");
+                }
+                if(skin4.activeInHierarchy == true)
+                {
+                    animP4.SetTrigger("running");
+                }
+            }
+
+            if(movDir.x == 0 && movDir.y == 0)
+            {
+                if(skin1.activeInHierarchy == true)
+                {
+                    animP1.SetTrigger("idle");
+                }
+                if(skin2.activeInHierarchy == true)
+                {
+                    animP2.SetTrigger("idle");
+                }
+                if(skin3.activeInHierarchy == true)
+                {
+                    animP3.SetTrigger("idle");
+                }
+                if(skin4.activeInHierarchy == true)
+                {
+                    animP4.SetTrigger("idle");
+                }
+            }
+
+            #endregion
+
+        }else
+        {
+            UpdateOldInp();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!oldInp)
+        {
+            // The actual movement
+            //playerRb.velocity = new Vector3(movDir.x * speed, playerRb.velocity.y, movDir.y * speed);
+            // fixes collision due to speed
+            if(movDir.x != 0 && movDir.y != 0)
+            {
+                speed = 7f;
+            }else
+            {
+                speed = 10f;
+            }
+
+            // moves the player
+            transform.Translate(Vector3.right * movDir.x * Time.deltaTime * speed);
+            transform.Translate(Vector3.forward * movDir.y * Time.deltaTime * speed);
+
+            //Jumping
+            if (jump.WasPressedThisFrame() && isOnGround)
+            {
+                playerRb.AddForce(Vector3.up * jumpForce);
+                isOnGround = false;
+            }
+        }
+    }
+
+    private void UpdateOldInp()
+    {
         #region  INPUTS AND MOVEMENT
 
         // updates val of the input
@@ -163,7 +337,7 @@ public class PlayerController : MonoBehaviour
         if (gM.isGameActive == true)
         {
             // changes the cam to the 1st person cam
-            if (f1Input > 0 || Input.GetAxisRaw("Dpad Horizontal") == 1)
+            if (f1Input > 0)
             {
                 firstPersonCam.SetActive(true);
                 secondPersonCam.SetActive(false);
@@ -171,7 +345,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // changes the cam to the 2nd person cam
-            if (f2Input > 0 || Input.GetAxisRaw("Dpad Vertical") == -1)
+            if (f2Input > 0)
             {
                 firstPersonCam.SetActive(false);
                 secondPersonCam.SetActive(true);
@@ -179,7 +353,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // changes the cam to the 3rd person cam
-            if (f3Input > 0 || Input.GetAxisRaw("Dpad Horizontal") == -1)
+            if (f3Input > 0)
             {
                 firstPersonCam.SetActive(false);
                 secondPersonCam.SetActive(false);
@@ -263,6 +437,30 @@ public class PlayerController : MonoBehaviour
         #endregion
     }
 
+    private void Bounds()
+    {
+        // Keep player within the bounds of the level
+        float boundBox = 50f;
+
+        Vector3 pos = transform.position;
+
+        if (pos.x > boundBox)
+        {
+            pos.x = boundBox;
+        }else if (pos.x < -boundBox)
+        {
+            pos.x = -boundBox;
+        }else if (pos.z > boundBox)
+        {
+            pos.z = boundBox;
+        }else if (pos.z < -boundBox)
+        {
+            pos.z = -boundBox;
+        }
+
+        transform.position = pos;
+    }
+
     private void Pause()
     {
         // pausing the game
@@ -336,5 +534,14 @@ public class PlayerController : MonoBehaviour
                 sM.spawnCop = true;
             }
         }
+    }
+
+    private void OnDisable()
+    {
+        // Again so the input system does not yell at me
+        move.Disable();
+        jump.Disable();
+        pause.Disable();
+        pov.Disable();
     }
 }
