@@ -9,6 +9,7 @@ public class SpawnManager : MonoBehaviour
     private float spreadX = 50f;
     private float spreadY = 20f;
     private float spreadZ = 50f;
+    private int difficulty;
 
     #endregion
 
@@ -27,7 +28,7 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        difficulty = PlayerPrefs.GetInt("Difficulty");
     }
 
     // Update is called once per frame
@@ -35,7 +36,15 @@ public class SpawnManager : MonoBehaviour
     {
         if(spawnEnabled == true)
         {
-            PosRaycast();
+            if (difficulty == 1 && spawnCop)
+            {
+                PosRaycast();
+                spawnCop = true;
+                PosRaycast();
+            }else
+            {
+                PosRaycast();
+            }
         }
     }
 
@@ -60,6 +69,7 @@ public class SpawnManager : MonoBehaviour
             }else
             {
                 Debug.Log("name of colliders found " + collidersInsideOverlapBox[0].name);
+                PosRaycast();
             }
         }
     }
@@ -82,11 +92,6 @@ public class SpawnManager : MonoBehaviour
                 GameObject clone2 = Instantiate(objectsToSpawn[1], posToSpawn, rotationToSpawn);
                 spawnCop = false;
                 spawnEnabled = false;
-
-                if (PlayerPrefs.GetInt("Difficulty") == 1)
-                {
-                    GameObject clone2Also = Instantiate(objectsToSpawn[1], posToSpawn, rotationToSpawn);
-                }
             }
         }
     }

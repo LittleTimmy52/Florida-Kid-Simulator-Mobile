@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class Links : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void OpenMyWebsite()
     {
         Application.OpenURL("https://florida-kid-simulator.weebly.com/");

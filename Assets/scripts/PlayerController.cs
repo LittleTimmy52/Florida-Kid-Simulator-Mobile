@@ -60,7 +60,6 @@ public class PlayerController : MonoBehaviour
     public GameObject crosshairs;
     public int difficulty = 5;
     public bool isGamePaused;
-    public bool oldInp = false;
 
     #endregion
 
@@ -146,65 +145,60 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!oldInp)
-        {
-            movDir = move.ReadValue<Vector2>();
-            Bounds();
+        movDir = move.ReadValue<Vector2>();
+        Bounds();
 
-            #region  CAM CHANGE
-
-            if (gM.isGameActive == true)
+        if (pause.WasPressedThisFrame())
             {
-                // changes the cam to the 1st person cam
-                if (sel == 1)
-                {
-                    firstPersonCam.SetActive(true);
-                    secondPersonCam.SetActive(false);
-                    thirdPersonCam.SetActive(false);
-                }
-
-                // changes the cam to the 2nd person cam
-                if (sel == 2)
-                {
-                    firstPersonCam.SetActive(false);
-                    secondPersonCam.SetActive(true);
-                    thirdPersonCam.SetActive(false);
-                }
-
-                // changes the cam to the 3rd person cam
-                if (sel == 3)
-                {
-                    firstPersonCam.SetActive(false);
-                    secondPersonCam.SetActive(false);
-                    thirdPersonCam.SetActive(true);
-                }
-
-                if (pov.WasPressedThisFrame())
-                {
-                    if (sel < 3)
-                    {
-                        sel ++;
-                    }else if (sel == 3)
-                    {
-                        sel = 1;
-                    }else
-                    {
-                        Debug.LogWarning("The selected pov is either above 3 or below 1. sel: " + sel + " sel will now be set to 1");
-                        sel = 1;
-                    }
-                }
-            }
-
-            #endregion
-
-            if (pause.WasPressedThisFrame())
-            {
+                print("pressed");
                 if (gM.isGameOver == false)
                 {
+                    print("pause toggle");
                     isGamePaused = !isGamePaused;
                     Pause();
                 }
             }
+
+        #region  CAM CHANGE
+
+        if (gM.isGameActive == true)
+        {
+            // changes the cam to the 1st person cam
+            if (sel == 1)
+            {
+                firstPersonCam.SetActive(true);
+                secondPersonCam.SetActive(false);
+                thirdPersonCam.SetActive(false);
+            }
+
+            // changes the cam to the 2nd person cam
+            if (sel == 2)
+            {
+                firstPersonCam.SetActive(false);
+                secondPersonCam.SetActive(true);
+                thirdPersonCam.SetActive(false);
+            }
+
+            // changes the cam to the 3rd person cam
+            if (sel == 3)
+            {
+                firstPersonCam.SetActive(false);
+                secondPersonCam.SetActive(false);
+                thirdPersonCam.SetActive(true);
+            }
+
+            if (pov.WasPressedThisFrame())
+            {
+                if (sel < 3)
+                {
+                    sel ++;
+                }else
+                {
+                    sel = 1;
+                }
+            }
+
+            #endregion
 
             if(transform.position.y < -20)
             {
@@ -252,189 +246,32 @@ public class PlayerController : MonoBehaviour
                     animP4.SetTrigger("idle");
                 }
             }
-
-            #endregion
-
-        }else
-        {
-            UpdateOldInp();
         }
+
+        #endregion
     }
 
     private void FixedUpdate()
     {
-        if (!oldInp)
-        {
-            // The actual movement
-            //playerRb.velocity = new Vector3(movDir.x * speed, playerRb.velocity.y, movDir.y * speed);
-            // fixes collision due to speed
-            if(movDir.x != 0 && movDir.y != 0)
-            {
-                speed = 7f;
-            }else
-            {
-                speed = 10f;
-            }
-
-            // moves the player
-            transform.Translate(Vector3.right * movDir.x * Time.deltaTime * speed);
-            transform.Translate(Vector3.forward * movDir.y * Time.deltaTime * speed);
-
-            //Jumping
-            if (jump.WasPressedThisFrame() && isOnGround)
-            {
-                playerRb.AddForce(Vector3.up * jumpForce);
-                isOnGround = false;
-            }
-        }
-    }
-
-    private void UpdateOldInp()
-    {
-        #region  INPUTS AND MOVEMENT
-
-        // updates val of the input
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-        jumpInput = Input.GetAxis("Jump");
-        f1Input = Input.GetAxisRaw("F1");
-        f2Input = Input.GetAxisRaw("F2");
-        f3Input = Input.GetAxisRaw("F3");
-
         // fixes collision due to speed
-        if(horizontalInput != 0 && verticalInput != 0)
+        if(movDir.x != 0 && movDir.y != 0)
         {
-            speed = 7f;
+            speed = 8.5f;
         }else
         {
             speed = 10f;
         }
 
         // moves the player
-        transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
-        transform.Translate(Vector3.forward * verticalInput * Time.deltaTime * speed);
+        transform.Translate(Vector3.right * movDir.x * Time.deltaTime * speed);
+        transform.Translate(Vector3.forward * movDir.y * Time.deltaTime * speed);
 
-        // jumping
-        if (jumpInput == 1 && isOnGround == true)
+        //Jumping
+        if (jump.WasPressedThisFrame() && isOnGround)
         {
             playerRb.AddForce(Vector3.up * jumpForce);
             isOnGround = false;
         }
-
-        if (Input.GetButtonDown("Pause"))
-        {
-            if (gM.isGameOver == false)
-            {
-                isGamePaused = !isGamePaused;
-                Pause();
-            }
-        }
-
-        #endregion
-
-        #region  CAM CHANGE
-
-        if (gM.isGameActive == true)
-        {
-            // changes the cam to the 1st person cam
-            if (f1Input > 0)
-            {
-                firstPersonCam.SetActive(true);
-                secondPersonCam.SetActive(false);
-                thirdPersonCam.SetActive(false);
-            }
-
-            // changes the cam to the 2nd person cam
-            if (f2Input > 0)
-            {
-                firstPersonCam.SetActive(false);
-                secondPersonCam.SetActive(true);
-                thirdPersonCam.SetActive(false);
-            }
-
-            // changes the cam to the 3rd person cam
-            if (f3Input > 0)
-            {
-                firstPersonCam.SetActive(false);
-                secondPersonCam.SetActive(false);
-                thirdPersonCam.SetActive(true);
-            }
-        }
-
-        #endregion
-
-        #region BOUNDS
-
-        // the bounds on the x axis
-        if (transform.position.x < -xBound)
-        {
-            transform.position = new Vector3(-xBound, transform.position.y, transform.position.z);
-        }
-        if (transform.position.x > xBound)
-        {
-            transform.position = new Vector3(xBound, transform.position.y, transform.position.z);
-        }
-
-        // the bounds on the y axis
-        if (transform.position.z < -zBound)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -zBound);
-        }
-        if (transform.position.z > zBound)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, zBound);
-        }
-
-        #endregion
-
-        if(transform.position.y < -20)
-        {
-            transform.position = new Vector3(0, 2.2f, 0);
-        }
-
-        #region ANIMATION TRIGGERS
-
-        if(horizontalInput != 0 || verticalInput != 0)
-        {
-            if(skin1.activeInHierarchy == true)
-            {
-                animP1.SetTrigger("running");
-            }
-            if(skin2.activeInHierarchy == true)
-            {
-                animP2.SetTrigger("running");
-            }
-            if(skin3.activeInHierarchy == true)
-            {
-                animP3.SetTrigger("running");
-            }
-            if(skin4.activeInHierarchy == true)
-            {
-                animP4.SetTrigger("running");
-            }
-        }
-
-        if(horizontalInput == 0 && verticalInput == 0)
-        {
-            if(skin1.activeInHierarchy == true)
-            {
-                animP1.SetTrigger("idle");
-            }
-            if(skin2.activeInHierarchy == true)
-            {
-                animP2.SetTrigger("idle");
-            }
-            if(skin3.activeInHierarchy == true)
-            {
-                animP3.SetTrigger("idle");
-            }
-            if(skin4.activeInHierarchy == true)
-            {
-                animP4.SetTrigger("idle");
-            }
-        }
-
-        #endregion
     }
 
     private void Bounds()
@@ -463,6 +300,7 @@ public class PlayerController : MonoBehaviour
 
     private void Pause()
     {
+        print("called");
         // pausing the game
         if (isGamePaused == true && gM.isGameOver == false)
         {
@@ -470,12 +308,7 @@ public class PlayerController : MonoBehaviour
             crosshairs.SetActive(false);
             Time.timeScale = 0;
             gM.isGameActive = false;
-
-            /*// clear selected obj
-            EventSystem.current.SetSelectedGameObject(null);
-
-            // set new selected obj
-            EventSystem.current.SetSelectedGameObject(pauseFirstButton);*/
+            print("pause");
         }
 
         // unpausing the game
@@ -487,6 +320,7 @@ public class PlayerController : MonoBehaviour
                 pauseMenu.SetActive(false);
                 crosshairs.SetActive(true);
                 gM.isGameActive = true;
+                print("unpause");
             }
         }
     }

@@ -11,6 +11,8 @@ public class EnemyController : MonoBehaviour
     
     private GameManager gM;
 
+    private Animator anim;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +36,18 @@ public class EnemyController : MonoBehaviour
         {
             agent.SetDestination(target.position);
         }
+
+        #region ANIMATION TRIGGERS
+
+        if (agent.velocity.magnitude != 0)
+        {
+            anim.SetTrigger("running");
+        }else
+        {
+            anim.SetTrigger("idle");
+        }
+
+        #endregion
     }
 
     void OnDrawGizmosSelected()

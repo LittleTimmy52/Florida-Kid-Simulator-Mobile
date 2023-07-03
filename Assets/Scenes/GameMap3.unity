@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: b05d1a154e516ff4d92ba065b42d18f6,
+  m_LightingDataAsset: {fileID: 112000000, guid: 3651aeccd2f3f469db16987b861196ea,
     type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
@@ -266,8 +266,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db076acfe104c9247aa17b49f7089af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oldInp: 0
-  isMouseLocked: 1
   cameraRotateXMin: -90
   cameraRotateXMax: 90
   mouseSmooth: 12
@@ -5285,8 +5283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db076acfe104c9247aa17b49f7089af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oldInp: 0
-  isMouseLocked: 1
   cameraRotateXMin: -90
   cameraRotateXMax: 90
   mouseSmooth: 12
@@ -6103,8 +6099,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db076acfe104c9247aa17b49f7089af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oldInp: 0
-  isMouseLocked: 1
   cameraRotateXMin: -90
   cameraRotateXMax: 90
   mouseSmooth: 12
@@ -6225,7 +6219,6 @@ MonoBehaviour:
   crosshairs: {fileID: 1406060767}
   difficulty: 5
   isGamePaused: 0
-  oldInp: 0
 --- !u!1 &1406060767
 GameObject:
   m_ObjectHideFlags: 0

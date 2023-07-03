@@ -14,12 +14,6 @@ public class Flag : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         // if the flag collids with the ground it stops moving down

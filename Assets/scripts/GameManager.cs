@@ -153,12 +153,6 @@ public class GameManager : MonoBehaviour
             gameOver.SetActive(true);
             crosshairs.SetActive(false);
             isGameActive = false;
-
-            /*// clear selected obj
-            EventSystem.current.SetSelectedGameObject(null);
-
-            // set new selected obj
-            EventSystem.current.SetSelectedGameObject(gameOverFirstButton);*/
         }
     }
 

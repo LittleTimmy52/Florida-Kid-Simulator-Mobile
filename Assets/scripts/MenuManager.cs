@@ -121,13 +121,6 @@ public class MenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // allows player to use the input axis to go back
-        // this is really for options because the menu is scuffed
-        /*if (Input.GetButtonDown("Cancel"))
-        {
-            Back();
-        }*/
-
         // sets the highscore text
         highScore.SetText("High score: " + PlayerPrefs.GetInt("High score"));
 
@@ -227,9 +220,7 @@ public class MenuManager : MonoBehaviour
             skin2.SetActive(false);
             skin3.SetActive(false);
             skin4.SetActive(false);
-        }
-
-        if(skinSelected == 2)
+        }else if(skinSelected == 2)
         {
             skin1Button.interactable = true;
             skin2Button.interactable = false;
@@ -239,9 +230,7 @@ public class MenuManager : MonoBehaviour
             skin2.SetActive(true);
             skin3.SetActive(false);
             skin4.SetActive(false);
-        }
-
-        if(skinSelected == 3)
+        }else if(skinSelected == 3)
         {
             skin1Button.interactable = true;
             skin2Button.interactable = true;
@@ -251,9 +240,7 @@ public class MenuManager : MonoBehaviour
             skin2.SetActive(false);
             skin3.SetActive(true);
             skin4.SetActive(false);
-        }
-
-        if(skinSelected == 4)
+        }else
         {
             skin1Button.interactable = true;
             skin2Button.interactable = true;
@@ -283,28 +270,19 @@ public class MenuManager : MonoBehaviour
         oldDifficulty = PlayerPrefs.GetInt("Difficulty");
 
         // runs the function for what difficulty is saved
-        //depending on what difficulty is saved
         if (oldDifficulty == 5)
         {
             Easy();
-        }
-
-        if (oldDifficulty == 4)
+        }else if (oldDifficulty == 4)
         {
             Normal();
-        }
-
-        if (oldDifficulty == 3)
+        }else if (oldDifficulty == 3)
         {
             Hard();
-        }
-
-        if (oldDifficulty == 2)
+        }else if (oldDifficulty == 2)
         {
             Extreme();
-        }
-
-        if (oldDifficulty == 1)
+        }else
         {
             Nightmare();
         }
@@ -332,13 +310,6 @@ public class MenuManager : MonoBehaviour
         // closes the menu, opens the options
         mainMenu.SetActive(false);
         optionsMenu.SetActive(true);
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(optionsFirstButton);*/
-
         LoadButtonsDifficulty();
     }
 
@@ -347,12 +318,6 @@ public class MenuManager : MonoBehaviour
         // closes the menu opens the info
         mainMenu.SetActive(false);
         info.SetActive(true);
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(infoFirstButton);*/
     }
 
     public void Exit()
@@ -383,12 +348,6 @@ public class MenuManager : MonoBehaviour
         info.SetActive(false);
         skinsMenu.SetActive(false);
         mapMenu.SetActive(false);
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(mainMenuFirstButton);*/
     }
 
     public void NotNow()
@@ -546,19 +505,13 @@ public class MenuManager : MonoBehaviour
         // stores the difficulty
         StoreDifficulty(5);
 
-        // sets all buttions to be interactable
-        // sets the buttion clicked to be uninteractable
+        // disables the selected button
+        foreach (Button b in buttons)
+        {
+            b.interactable = true;
+        }
+
         buttons[0].interactable = false;
-        buttons[1].interactable = true;
-        buttons[2].interactable = true;
-        buttons[3].interactable = true;
-        buttons[4].interactable = true;
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(optionsFirstButton);*/
     }
 
     public void Normal()
@@ -566,19 +519,13 @@ public class MenuManager : MonoBehaviour
         // stores the difficulty
         StoreDifficulty(4);
 
-        // sets all buttions to be interactable
-        // sets the buttion clicked to be uninteractable
+        // disables the selected button
+        foreach (Button b in buttons)
+        {
+            b.interactable = true;
+        }
+
         buttons[1].interactable = false;
-        buttons[0].interactable = true;
-        buttons[2].interactable = true;
-        buttons[3].interactable = true;
-        buttons[4].interactable = true;
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(optionsFirstButton);*/
     }
 
     public void Hard()
@@ -586,19 +533,13 @@ public class MenuManager : MonoBehaviour
         // stores the difficulty
         StoreDifficulty(3);
 
-        // sets all buttions to be interactable
-        // sets the buttion clicked to be uninteractable
+        // disables the selected button
+        foreach (Button b in buttons)
+        {
+            b.interactable = true;
+        }
+
         buttons[2].interactable = false;
-        buttons[0].interactable = true;
-        buttons[1].interactable = true;
-        buttons[3].interactable = true;
-        buttons[4].interactable = true;
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(optionsFirstButton);*/
     }
 
     public void Extreme()
@@ -606,19 +547,13 @@ public class MenuManager : MonoBehaviour
         // stores the difficulty
         StoreDifficulty(2);
             
-        // sets all buttions to be interactable
-        // sets the buttion clicked to be uninteractable
+        // disables the selected button
+        foreach (Button b in buttons)
+        {
+            b.interactable = true;
+        }
+
         buttons[3].interactable = false;
-        buttons[0].interactable = true;
-        buttons[1].interactable = true;
-        buttons[2].interactable = true;
-        buttons[4].interactable = true;
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(optionsFirstButton);*/
     }
 
     public void Nightmare()
@@ -626,19 +561,13 @@ public class MenuManager : MonoBehaviour
         // stores the difficulty
         StoreDifficulty(1);
 
-        // sets all buttions to be interactable
-        // sets the buttion clicked to be uninteractable
+        // disables the selected button
+        foreach (Button b in buttons)
+        {
+            b.interactable = true;
+        }
+
         buttons[4].interactable = false;
-        buttons[0].interactable = true;
-        buttons[1].interactable = true;
-        buttons[2].interactable = true;
-        buttons[3].interactable = true;
-
-        // clear selected obj
-        /*EventSystem.current.SetSelectedGameObject(null);
-
-        // set new selected obj
-        EventSystem.current.SetSelectedGameObject(optionsFirstButton);*/
     }
 
     public void SetSensitivityOptions(float newSensitivity)
