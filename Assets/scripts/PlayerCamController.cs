@@ -72,8 +72,8 @@ public class PlayerCamController : MonoBehaviour
     {
         #region  COLLECT MOUSE INPUTS
 
-        m_mouseX = look.ReadValue<Vector2>().x;
-        m_mouseY = look.ReadValue<Vector2>().y;
+        m_mouseX = look.ReadValue<Vector2>().x * mouseSmooth;
+        m_mouseY = look.ReadValue<Vector2>().y * mouseSmooth;
 
         #endregion
     }
